@@ -12,7 +12,7 @@ class InterceptHandler(logging.Handler):
         # Retrieve context where the logging call occurred, this happens to be in the 6th frame upward
         logger_opt = loguru.logger.opt(depth=6, exception=record.exc_info)
         logger_opt.log(record.levelname, record.getMessage())
-
+        
 
 def func(log_level):
     def wrapper(self, msg, *args, **kwargs):
@@ -32,7 +32,7 @@ class LoggingMixin:
     
     def __init__(self, context=None):
         self._set_context(context)
-    
+            
     @property
     def log(self) -> Logger:
         """Returns a logger."""
@@ -42,9 +42,9 @@ class LoggingMixin:
             logging.basicConfig(handlers=[self.loguru_handler], level=logging.INFO)
             for level_name, level in self.custom_log_level.items():
                 logging.addLevelName(level, level_name)
-                
+    
                 setattr(self._log, level_name.lower(), types.MethodType(func(level), self._log))
-        
+                
         return self._log
     
     def _set_context(self, context):  # todo ?
@@ -60,12 +60,13 @@ class LoggingMixin:
         return object.__getattribute__(self, item)
 
 
-def set_context(__logger: logging.Logger, context):
-    _logger = __logger
+def set_context(logger: logging.Logger, context):
+    _logger = logger
 
 
-logger = LoggingMixin()
+normal_logger = LoggingMixin()
 
 if __name__ == '__main__':
-    logger.log.success('123')
-    logger.success('123')
+    normal_logger.log.success('123')
+    normal_logger.success('123')
+    
